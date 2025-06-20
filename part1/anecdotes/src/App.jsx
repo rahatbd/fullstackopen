@@ -27,9 +27,6 @@ const App = () => {
         }, 0);
     };
 
-    // alternate solution
-    // const mostVotes = () => votes.indexOf(Math.max(...votes));
-
     return (
         <>
             <h1>Anecdote of the day</h1>
