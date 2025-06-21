@@ -1,5 +1,4 @@
 import express from 'express';
-import cors from 'cors';
 import morgan from 'morgan';
 
 let persons = [
@@ -30,7 +29,7 @@ const PORT = process.env.PORT || 3001;
 
 morgan.token('body', request => JSON.stringify(request.body));
 
-app.use(cors({origin: 'http://localhost:5173'}));
+app.use(express.static('dist'));
 app.use(express.json());
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'));
 

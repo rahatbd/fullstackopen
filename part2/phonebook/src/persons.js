@@ -1,5 +1,5 @@
 import axios from 'axios';
-const baseURL = 'http://localhost:3001/persons';
+const baseURL = '/api/persons';
 
 export const getPersons = async () => (await axios.get(baseURL)).data;
 export const createPerson = async newPerson => (await axios.post(baseURL, newPerson)).data;

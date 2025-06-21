@@ -1,0 +1,1 @@
+ul{list-style-type:none;padding-left:0}li,input{margin-bottom:1ex}input{margin-left:.5ch}label,button{cursor:pointer}.notification{background-color:#d3d3d3;color:#037a03;font-size:1.25rem;font-weight:500;border-style:solid;border-radius:.25rem;padding:.5rem}.notification.update{color:#b8860b}.notification.delete{color:#ff4500}.notification.error{color:red}
