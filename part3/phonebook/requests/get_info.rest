@@ -1,4 +1,5 @@
+### local
 GET http://localhost:3001/info
 
-###
+### production
 GET https://phonebook-jr6r.onrender.com/info

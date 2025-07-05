@@ -6,7 +6,7 @@ Content-Type: application/json
     "number": "040-243563"
 }
 
-###
+### status: 400
 POST http://localhost:3001/api/persons
 Content-Type: application/json
 
@@ -14,7 +14,7 @@ Content-Type: application/json
     "name": "Liisa Marttinen"
 }
 
-###
+### status: 400
 POST http://localhost:3001/api/persons
 Content-Type: application/json
 
@@ -22,7 +22,7 @@ Content-Type: application/json
     "number": "040-243563"
 }
 
-###
+### status: 409
 POST http://localhost:3001/api/persons
 Content-Type: application/json
 

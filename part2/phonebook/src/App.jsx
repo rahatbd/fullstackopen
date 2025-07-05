@@ -60,13 +60,19 @@ const PersonForm = ({newName, setNewName, newNumber, setNewNumber, handleSubmit}
 );
 
 const Persons = ({newSearch, searchPersons, persons, handleDelete}) => {
-    const personList = newSearch ? searchPersons : persons;
+    const personList = newSearch.trim() ? searchPersons : persons;
+    const noFilteredPerson = newSearch.trim() && personList.length === 0;
+    const noAddedPerson = persons.length === 0;
 
     return (
         <>
-            {newSearch && personList.length === 0 ? (
+            {noFilteredPerson ? (
                 <p>
                     <em>no numbers found</em>
+                </p>
+            ) : noAddedPerson ? (
+                <p>
+                    <em>no numbers added</em>
                 </p>
             ) : (
                 <ul>
@@ -113,6 +119,7 @@ const App = () => {
 
     const handleSubmit = event => {
         event.preventDefault();
+        if (!newName.trim() || !newNumber.trim()) return alert('Name or number cannot be empty');
         const duplicatePerson = persons.find(({name}) => name.toLowerCase() === newName.toLowerCase());
         if (duplicatePerson) {
             if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
@@ -149,8 +156,8 @@ const App = () => {
         const {name} = persons.find(({id}) => id === personId);
         if (window.confirm(`Delete ${name}?`)) {
             deletePerson(personId)
-                .then(data => {
-                    setPersons(persons.filter(({id}) => id !== data.id));
+                .then(() => {
+                    setPersons(persons.filter(({id}) => id !== personId));
                     showMessage({message: `Deleted ${name}`, type: 'delete'});
                 })
                 .catch(error => {

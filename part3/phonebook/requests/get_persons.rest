@@ -1,0 +1,5 @@
+### local
+GET http://localhost:3001/api/persons
+
+### production
+GET https://phonebook-jr6r.onrender.com/api/persons
