@@ -5,13 +5,13 @@ import Person from './models/person.js';
 
 // let persons = [
 //     {
-//         name: 'Arto Hellas',
-//         number: '040-123456',
+//         name: 'Ada Lovelace',
+//         number: '39-44-5323523',
 //         id: '1',
 //     },
 //     {
-//         name: 'Ada Lovelace',
-//         number: '39-44-5323523',
+//         name: 'Arto Hellas',
+//         number: '040-123456',
 //         id: '2',
 //     },
 //     {
@@ -75,7 +75,7 @@ app.get('/api/persons/:id', (request, response, next) => {
 
 app.put('/api/persons/:id', (request, response, next) => {
     const {name, number} = request.body;
-    Person.findByIdAndUpdate(request.params.id, {name, number}, {new: true})
+    Person.findByIdAndUpdate(request.params.id, {name, number}, {new: true, runValidators: true})
         .then(updatedPerson => {
             if (!updatedPerson) return response.status(404).end();
             response.json(updatedPerson);
@@ -94,11 +94,12 @@ app.delete('/api/persons/:id', (request, response, next) => {
 
 app.post('/api/persons', (request, response, next) => {
     const {name, number} = request.body;
-    if (!name?.trim() || !number?.trim()) return response.status(400).json({error: 'name or number missing'});
-    Person.findOne({name})
+    const person = new Person({name, number});
+    person
+        .validate()
+        .then(() => Person.findOne({name}))
         .then(existingPerson => {
             if (existingPerson) return response.status(409).json({error: 'name must be unique'});
-            const person = new Person({name, number});
             return person.save().then(savedPerson => response.json(savedPerson));
         })
         .catch(error => next(error));
@@ -109,6 +110,7 @@ const unknownEndpoint = (_, response) => response.status(404).send({error: 'unkn
 const errorHandler = (error, request, response, next) => {
     console.error(error.message);
     if (error.name === 'CastError') return response.status(400).send({error: 'malformatted id'});
+    if (error.name === 'ValidationError') return response.status(400).json({error: error.message});
     next(error);
 };
 

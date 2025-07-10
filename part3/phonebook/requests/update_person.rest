@@ -1,9 +1,9 @@
-PUT http://localhost:3001/api/persons/68685a18cfb163e8fb8c976c
+PUT http://localhost:3001/api/persons/68702c1ca5355bc964a21a1d
 Content-Type: application/json
 
 {
-    "name": "Arto Hellas",
-    "number": "040-2345823"
+    "name": "Liisa Marttinen",
+    "number": "519.555.0000"
 }
 
 ### status: 404
@@ -11,6 +11,6 @@ PUT http://localhost:3001/api/persons/685f0b337e2a852b5f27fe5b
 Content-Type: application/json
 
 {
-    "name": "Arto Hellas",
-    "number": "040-2345823"
+    "name": "Liisa Marttinen",
+    "number": "437.555.0000"
 }

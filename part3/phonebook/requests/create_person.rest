@@ -3,6 +3,15 @@ Content-Type: application/json
 
 {
     "name": "Liisa Marttinen",
+    "number": "437.555.0000"
+}
+
+### status: 400
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+    "name": "rr",
     "number": "040-243563"
 }
 
@@ -19,7 +28,7 @@ POST http://localhost:3001/api/persons
 Content-Type: application/json
 
 {
-    "number": "040-243563"
+    "number": "519.555.0000"
 }
 
 ### status: 409
@@ -27,6 +36,6 @@ POST http://localhost:3001/api/persons
 Content-Type: application/json
 
 {
-    "name": "Arto Hellas",
-    "number": "21-77-9832145"
+    "name": "Liisa Marttinen",
+    "number": "519.555.0000"
 }

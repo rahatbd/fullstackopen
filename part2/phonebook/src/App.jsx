@@ -16,6 +16,7 @@ const Filter = ({persons, newSearch, handleSearch}) => (
             filter shown with
             <input
                 value={newSearch}
+                placeholder="search name..."
                 onChange={handleSearch}
                 list="numbers"
             />
@@ -38,6 +39,7 @@ const PersonForm = ({newName, setNewName, newNumber, setNewNumber, handleSubmit}
                 name:
                 <input
                     value={newName}
+                    placeholder="Ada"
                     onChange={event => setNewName(event.target.value)}
                     required
                 />
@@ -48,6 +50,7 @@ const PersonForm = ({newName, setNewName, newNumber, setNewNumber, handleSubmit}
                 number:
                 <input
                     value={newNumber}
+                    placeholder="416.555.7890"
                     onChange={event => setNewNumber(event.target.value)}
                     required
                 />
@@ -61,12 +64,12 @@ const PersonForm = ({newName, setNewName, newNumber, setNewNumber, handleSubmit}
 
 const Persons = ({newSearch, searchPersons, persons, handleDelete}) => {
     const personList = newSearch.trim() ? searchPersons : persons;
-    const noFilteredPerson = newSearch.trim() && personList.length === 0;
+    const noSearchPerson = newSearch.trim() && personList.length === 0;
     const noAddedPerson = persons.length === 0;
 
     return (
         <>
-            {noFilteredPerson ? (
+            {noSearchPerson ? (
                 <p>
                     <em>no numbers found</em>
                 </p>
@@ -78,7 +81,7 @@ const Persons = ({newSearch, searchPersons, persons, handleDelete}) => {
                 <ul>
                     {personList.map(({name, number, id}) => (
                         <li key={id}>
-                            {name} {number} &nbsp;
+                            {name} | {number} &nbsp;
                             <button onClick={() => handleDelete(id)}>delete</button>
                         </li>
                     ))}
@@ -95,14 +98,16 @@ const App = () => {
     const [newNumber, setNewNumber] = useState('');
     const [newSearch, setNewSearch] = useState('');
     const [message, setMessage] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         getPersons()
             .then(data => setPersons(data))
             .catch(error => {
                 console.error(error);
-                showMessage({message: `⛔️ Error: ${error.message}`, type: 'error'});
-            });
+                showMessage({message: `⛔️ Error: ${error.response?.data?.error || error.message || 'Unknown error'}`, type: 'error'});
+            })
+            .finally(() => setLoading(false));
     }, []);
 
     const showMessage = message => {
@@ -119,32 +124,34 @@ const App = () => {
 
     const handleSubmit = event => {
         event.preventDefault();
-        if (!newName.trim() || !newNumber.trim()) return alert('Name or number cannot be empty');
-        const duplicatePerson = persons.find(({name}) => name.toLowerCase() === newName.toLowerCase());
+        const trimmedName = newName.trim();
+        const trimmedNumber = newNumber.trim();
+        if (!trimmedName || !trimmedNumber) return alert('Name or number cannot be empty');
+        const duplicatePerson = persons.find(({name}) => name.toLowerCase() === trimmedName.toLowerCase());
         if (duplicatePerson) {
-            if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
-                updatePerson(duplicatePerson.id, {...duplicatePerson, number: newNumber})
+            if (window.confirm(`${trimmedName} is already added to phonebook, replace the old number with a new one?`)) {
+                updatePerson(duplicatePerson.id, {...duplicatePerson, number: trimmedNumber})
                     .then(data => {
                         setPersons(persons.map(person => (person.id === data.id ? data : person)));
-                        showMessage({message: `Updated ${newName}`, type: 'update'});
+                        showMessage({message: `Updated ${trimmedName}`, type: 'update'});
                     })
                     .catch(error => {
                         console.error(error);
-                        showMessage({message: `⛔️ Error: ${error.message}`, type: 'error'});
+                        showMessage({message: `⛔️ Error: ${error.response?.data?.error || error.message || 'Unknown error'}`, type: 'error'});
                     });
             } else {
                 return;
             }
         } else {
-            const newPerson = {name: newName, number: newNumber};
+            const newPerson = {name: trimmedName, number: trimmedNumber};
             createPerson(newPerson)
                 .then(data => {
                     setPersons([...persons, data]);
-                    showMessage({message: `Added ${newName}`, type: 'new'});
+                    showMessage({message: `Added ${trimmedName}`, type: 'new'});
                 })
                 .catch(error => {
                     console.error(error);
-                    showMessage({message: `⛔️ Error: ${error.message}`, type: 'error'});
+                    showMessage({message: `⛔️ Error: ${error.response?.data?.error || error.message || 'Unknown error'}`, type: 'error'});
                 });
         }
         setNewName('');
@@ -162,7 +169,7 @@ const App = () => {
                 })
                 .catch(error => {
                     console.error(error);
-                    showMessage({message: `⛔️ Error: ${error.message}`, type: 'error'});
+                    showMessage({message: `⛔️ Error: ${error.response?.data?.error || error.message || 'Unknown error'}`, type: 'error'});
                 });
         }
     };
@@ -185,12 +192,18 @@ const App = () => {
                 handleSubmit={handleSubmit}
             />
             <h2>Numbers</h2>
-            <Persons
-                searchPersons={searchPersons}
-                persons={persons}
-                newSearch={newSearch}
-                handleDelete={handleDelete}
-            />
+            {loading ? (
+                <p>
+                    <em>loading...</em>
+                </p>
+            ) : (
+                <Persons
+                    searchPersons={searchPersons}
+                    persons={persons}
+                    newSearch={newSearch}
+                    handleDelete={handleDelete}
+                />
+            )}
         </>
     );
 };
