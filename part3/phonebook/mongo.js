@@ -6,7 +6,7 @@ import mongoose from 'mongoose';
 //     process.exit(1);
 // }
 
-const [, , name, number] = process.argv;
+// const [, , name, number] = process.argv;
 const {MONGODB_URI: mongodbUrl} = process.env;
 
 mongoose.connect(mongodbUrl);
