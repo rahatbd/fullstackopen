@@ -36,10 +36,10 @@ app.use(express.json());
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'));
 
 app.get('/info', (_, response, next) => {
-    Person.find({})
-        .then(persons =>
+    Person.countDocuments({})
+        .then(count =>
             response.send(`
-                <p>Phonebook has info for ${persons.length} people</p>
+                <p>Phonebook has info for ${count} people</p>
                 <p>${new Date()}</p>
             `)
         )

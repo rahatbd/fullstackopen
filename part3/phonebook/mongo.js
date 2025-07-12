@@ -1,12 +1,11 @@
 import 'dotenv/config';
 import mongoose from 'mongoose';
 
-// if (process.argv.length < 3) {
-//     console.log('password not provided as an argument');
-//     process.exit(1);
-// }
+if (process.argv.length !== 2 && process.argv.length !== 4) {
+    console.log('wrong number of arguments provided');
+    process.exit(1);
+}
 
-// const [, , name, number] = process.argv;
 const {MONGODB_URI: mongodbUrl} = process.env;
 
 mongoose.connect(mongodbUrl);
@@ -18,17 +17,21 @@ const personSchema = new mongoose.Schema({
 
 const Person = mongoose.model('Person', personSchema);
 
-// const person = new Person({name, number});
+if (process.argv.length === 2) {
+    Person.find({}).then(persons => {
+        console.log('phonebook:');
+        for (const {name, number} of persons) {
+            console.log(name, number);
+        }
+        mongoose.connection.close();
+    });
+}
 
-// person.save().then(({name, number}) => {
-//     console.log(`added ${name} number ${number} to phonebook`);
-//     mongoose.connection.close();
-// });
-
-Person.find({}).then(persons => {
-    console.log('phonebook:');
-    for (const {name, number} of persons) {
-        console.log(name, number);
-    }
-    mongoose.connection.close();
-});
+if (process.argv.length === 4) {
+    const [, , name, number] = process.argv;
+    const person = new Person({name, number});
+    person.save().then(() => {
+        console.log(`added ${name} number ${number} to phonebook`);
+        mongoose.connection.close();
+    });
+}
