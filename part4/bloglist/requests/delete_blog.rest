@@ -1,0 +1,37 @@
+@baseUrl = http://localhost:3003
+@blogId = 69bc5f8f4f49bb272c1be1b2
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1sdXVra2FpIiwiaWQiOiI2OWE5MjhjNWQ2ZGE3ZDBlNDhiNDRmZGIiLCJpYXQiOjE3NzM3ODE3MDJ9.Sm2xtIoH8IAbXNBDUTXbY6fzvwMjbwFwk1Hb4kKpM_U
+
+### =========================
+### user authorized ✅
+### status: 204 No Content
+### =========================
+DELETE {{baseUrl}}/api/blogs/{{blogId}}
+Authorization: Bearer {{token}}
+
+### =========================
+### token missing ❌
+### status: 401 Unauthorized
+### =========================
+DELETE {{baseUrl}}/api/blogs/{{blogId}}
+
+### =========================
+### token invalid ❌
+### status: 401 Unauthorized
+### =========================
+DELETE {{baseUrl}}/api/blogs/{{blogId}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+
+### =========================
+### user unauthorized ❌
+### status: 403 Forbidden
+### =========================
+DELETE {{baseUrl}}/api/blogs/{{blogId}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImhlbGxhcyIsImlkIjoiNjlhOTI5ZGE4ZDViZjMzMjUzODEzY2QxIiwiaWF0IjoxNzczNzgyNzExfQ.YCmTAPLEEHW448GvWlF4w2gOu0M0ZIYikXrSV6v0mTk
+
+### =========================
+### blog not found ❌
+### status: 404 Not Found
+### =========================
+DELETE {{baseUrl}}/api/blogs/69b9ab880fe5c175b2590beb
+Authorization: Bearer {{token}}
