@@ -4,9 +4,13 @@ export const dummy = blogs => {
 
 export const totalLikes = blogs => blogs.reduce((sum, {likes}) => sum + likes, 0);
 
-export const favouriteBlog = blogs => blogs.reduce((likedBlog, blog) => (blog.likes > likedBlog.likes ? blog : likedBlog));
+export const favouriteBlog = blogs => {
+    if (!blogs.length) return {};
+    return blogs.reduce((likedBlog, blog) => (blog.likes > likedBlog.likes ? blog : likedBlog));
+};
 
 export const mostBlogs = blogs => {
+    if (!blogs.length) return null;
     const blogsCount = blogs.reduce((authorCount, {author}) => {
         authorCount[author] = (authorCount[author] || 0) + 1;
         return authorCount;
@@ -16,6 +20,7 @@ export const mostBlogs = blogs => {
 };
 
 export const mostLikes = blogs => {
+    if (!blogs.length) return null;
     const likesCount = blogs.reduce((authorCount, {author, likes}) => {
         authorCount[author] = (authorCount[author] || 0) + likes;
         return authorCount;

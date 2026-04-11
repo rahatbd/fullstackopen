@@ -22,17 +22,23 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
 
 blogsRouter.put('/:id', async (request, response) => {
     const blog = await Blog.findById(request.params.id);
-    if (!blog) return response.status(404).end();
+    if (!blog) return response.status(404).json({error: 'blog not found'});
+    blog.title = request.body.title;
+    blog.author = request.body.author;
+    blog.url = request.body.url;
     blog.likes = request.body.likes;
     const updatedBlog = await blog.save();
     response.json(updatedBlog);
 });
 
 blogsRouter.delete('/:id', userExtractor, async (request, response) => {
+    const {user} = request;
     const blog = await Blog.findById(request.params.id);
     if (!blog) return response.status(404).json({error: 'blog not found'});
-    if (blog.user.toString() !== request.user.id.toString()) return response.status(403).json({error: 'user unauthorized'});
-    await Blog.findByIdAndDelete(request.params.id);
+    if (blog.user.toString() !== user.id.toString()) return response.status(403).json({error: 'user not authorized'});
+    await blog.deleteOne();
+    user.blogs = user.blogs.filter(blogId => blogId.toString() !== blog._id.toString());
+    await user.save();
     response.status(204).end();
 });
 
