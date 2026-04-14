@@ -3,9 +3,12 @@ sequenceDiagram
     participant browser
     participant server
 
-    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+    Note right of browser: User writes a new note and clicks Save on the browser
+
+    browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
     activate server
-    Note right of browser: The browser sends HTTP Post request to the server address /new_note_spa with the data type as json
-    server-->>browser: Status code 201
+    server-->>browser: Status Code: 201 Created
     deactivate server
+
+    Note right of browser: Browser re-renders the notes along with the new note without page reload
 ```

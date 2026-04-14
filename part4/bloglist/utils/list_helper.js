@@ -4,10 +4,7 @@ export const dummy = blogs => {
 
 export const totalLikes = blogs => blogs.reduce((sum, {likes}) => sum + likes, 0);
 
-export const favouriteBlog = blogs => {
-    if (!blogs.length) return {};
-    return blogs.reduce((likedBlog, blog) => (blog.likes > likedBlog.likes ? blog : likedBlog));
-};
+export const favouriteBlog = blogs => blogs.reduce((likedBlog, blog) => (likedBlog.likes > blog.likes ? likedBlog : blog), {});
 
 export const mostBlogs = blogs => {
     if (!blogs.length) return null;
